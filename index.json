@@ -1,0 +1,15 @@
+{
+  "name": "reel-kit-guides",
+  "updated": "2026-10-24T18:56:38+09:00",
+  "engine_latest": "1.2.0",
+  "engine_required": "1.2.0",
+  "engine_note": "",
+  "lines": [
+    {
+      "engine_min": "1.2.0",
+      "guides": "2026.10.24-1",
+      "manifest": "v1.2.0/manifest.json",
+      "sha256": "2e91e46d2746373f9e7b0b64db1c0188dd94ae678d519048fcee1b6c5844472f"
+    }
+  ]
+}
