@@ -1,15 +1,21 @@
 {
   "name": "reel-kit-guides",
-  "updated": "2026-10-24T18:56:38+09:00",
-  "engine_latest": "1.2.0",
+  "updated": "2026-10-24T21:06:45+09:00",
+  "engine_latest": "1.2.1",
   "engine_required": "1.2.0",
-  "engine_note": "",
+  "engine_note": "윈도에서 막히던 곳을 고친 1.2.1 이 나왔어요",
   "lines": [
     {
       "engine_min": "1.2.0",
       "guides": "2026.10.24-1",
       "manifest": "v1.2.0/manifest.json",
       "sha256": "2e91e46d2746373f9e7b0b64db1c0188dd94ae678d519048fcee1b6c5844472f"
+    },
+    {
+      "engine_min": "1.2.1",
+      "guides": "2026.10.24-2",
+      "manifest": "v1.2.1/manifest.json",
+      "sha256": "72b097a1f56fce964ed00d2142306fe91320e187c1d9c6687b72f77ca0689b67"
     }
   ]
 }

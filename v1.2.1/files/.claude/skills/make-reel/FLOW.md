@@ -1,0 +1,257 @@
+# 릴스 한 편 만들기 · 진행 순서 (FLOW)
+
+이 문서는 `SKILL.md` 가 시작할 때 읽게 하는 지침이다. 키트를 시작할 때 `python3 engine/reel.py sync` 가 받아 둔다.
+
+이 키트는 **말 한 줄마다 화면이 바뀌는 40~50초 세로 영상**을 만든다.
+흰색이나 어두운색 단색 배경 · 강조색 하나 · 도형으로 설명하는 본문 · 말하는 단어만 칩으로 켜지는 자막이 고정 꼴이다.
+마지막 화면은 편마다 둘 중 하나다: **저장 · 팔로우**(`"cta": "save"`, 기본) 또는 **"댓글에 키워드"로 자료 주기**(`"cta": "keyword"`, 「자료 만들기」 추가 파일을 넣은 사람).
+
+**판단(무슨 소재를, 어떤 훅으로, 어떤 문장으로)은 Claude 와 사용자가 하고, 영상 조립은 엔진이 한다.**
+엔진은 `python3 engine/reel.py` 하나다. 큐(등장 시점)는 전부 음성의 단어 시각에서 계산된다.
+
+---
+
+## 0. 이렇게 이끈다: 오른쪽 대시보드로 한 단계씩
+
+**사용자에게 명령어 · 파일 이름을 시키지 않는다.** 명령은 Claude 가 돌린다.
+진행은 **단계 대시보드**(http://localhost:4320)로 보여 준다. 한 화면에 한 단계만, 아래에 「이전」 · 「다음」, 위에 단계 표시줄(끝낸 단계를 누르면 돌아간다)이 있다.
+
+```
+1 내 채널 (처음 한 번 · 멈춤) → 2 주제 (복사 · 붙여 넣기) → 3 대본 · 훅 (묻지 않고 자동) → 4 장면 (렌더 직전 확인 · 멈춤) → 5 올릴 글
+```
+
+**멈추는 곳은 둘뿐이다: 1 내 채널 · 4 장면.** 2 에서 주제를 받으면 4 까지 묻지 않고 만든다. 확인 없이 렌더하지 않는다.
+
+### 0-0. 맨 처음: 대시보드를 연다
+
+어떤 요청으로 시작했든 대시보드부터 띄운다.
+- 데스크톱 앱이면 미리보기 도구로 `.claude/launch.json` 의 **reel-dashboard** 를 시작한다(대화 옆 칸에 뜬다). 아니면 `python3 engine/reel.py dashboard` 를 백그라운드로 띄우고 "브라우저에서 http://localhost:4320 을 여세요"
+- 한 줄로 알린다: "오른쪽 대시보드를 열어 뒀어요. 1단계부터 차례로 고르시면 돼요. 사용설명서는 대시보드 위 「사용설명서」에 있어요."
+- **답하기 전에 늘 `episodes/state.json` 을 읽는다.** 대시보드에서 누른 것이 여기 남는다
+
+| state.json 칸 | 뜻 |
+|---|---|
+| `view` | 사용자가 보고 있는 단계(1~5). 안내를 이 단계에 맞춘다 |
+| `channelOk` | 1단계를 끝냈다(설계 확정). `skipped` 에 0 이 있으면 추천값 · 기본값으로 넘어간 것 |
+| `category` · `audience` | 2단계에서 고른 분야 · 보는 사람 |
+| `candidates` | Claude 가 조사해 적은 주제 후보(대시보드 2단계 카드) |
+| `topic` · `note` | 주제를 직접 정한 사람이 적은 주제 · 메모 |
+| `episode` | 지금 만드는 편 폴더 이름(`reel.py new` 가 적는다) |
+| `renderOk` | 4단계에서 「이대로 렌더」를 눌렀다(대시보드가 `render` · `cover` 를 직접 돌린다) |
+
+### 0-1. 1단계 내 채널 (처음 한 번 · 멈춤)
+
+사용자가 대시보드에서 다섯 묶음(채널 소개 → 브랜드 톤 → 캐릭터 → 소리 → 설계도)을 고른다. 고를 때마다 `brand/brand.json` 에 바로 적히고, 마지막에 「설계도 미리보기」(= `reel.py preview`)를 누르면 `brand/preview.png` 가 뜬다. 「이대로 시작」을 누르면 `channelOk` 가 된다.
+- Claude 는 기다린다. 사용자가 무엇을 고를지 물으면 아래 표의 추천과 이유로 답한다
+- 무료 목소리를 고르면 대시보드가 `edge-tts` 를 설치한다. 유료 목소리(ElevenLabs · MiniMax)면 대시보드 「4. 소리」의 키 칸에 붙여 넣고 목소리를 고르게 안내한다(받는 곳 링크가 그 칸에 있다, `references/voices.md`). 키를 대화에 붙여 넣게 하지 않는다
+- 「같이 만들기 (캐릭터)」 말을 붙여 넣으면 `references/mascot.md` 순서로 돕는다
+- **채팅으로 하고 싶다고 하면** 아래 네 마당을 `AskUserQuestion` 으로 묻고(한 번에 4개까지, 보기마다 추천 하나) `brand/brand.json` 에 적은 뒤 `preview` 를 보여 주고, `episodes/state.json` 의 `channelOk` 를 true 로 적는다
+
+**마당 1 · 채널 소개**
+
+| 질문 | 보기 | 채우는 칸 |
+|---|---|---|
+| 계정 이름과 핸들은? | 직접 입력 | `account.name` · `account.handle` · `signature.text` |
+| 채널에서 주로 무엇을 다루나요? | 일 잘하는 법 · AI 도구 · 살림 · 공부 · 직접 입력 | `tone.about` (주제 후보를 낼 때 쓴다) |
+
+**마당 2 · 브랜드 톤** (나중에 "말투 바꿔", "움직임 차분하게", "배경 어둡게" 로 언제든 바꾼다)
+
+| 질문 | 보기 | 채우는 칸 |
+|---|---|---|
+| 말투는? | **친근한 존댓말(추천)**: "저도 이렇게 했거든요" · 차분한 전문가: "이렇게 하면 됩니다" · 짧고 센 단정: "요약만 시켰다. 더 길어졌다" | `tone.speech`(`friendly` · `expert` · `punchy`). 쓰는 법은 `references/script.md` §0 |
+| 강조색은? | 주황 `#E8590C`(추천) · 남색 `#2F4AC0` · 초록 `#0F8A5F` · 직접 입력 | `colors.accent` 와 짝 `colors.accent_soft`: 주황 `#FFB27A` · 남색 `#9DB0FF` · 초록 `#7FD4AE`. 직접 입력이면 그 색을 흰색과 반반 섞은 색 |
+| 배경은? | **흰색(추천)** · 어두운색 | `background`(`white` · `dark`). 글자 · 선 · 카드 색은 엔진이 따라 바꾼다. 어두운색에서 강조색이 묻히면 엔진이 밝혀 쓴다 |
+| 움직임은? | **쫀득하게(추천)**: 튀어나오고 떨어지며 살짝 넘쳤다 선다 · 차분하게: 넘침 없이 미끄러지듯 선다 | `tone.motion`(`bouncy` · `calm`) |
+
+**마당 3 · 캐릭터**
+
+`examples/layouts.webp`(왼쪽 캐릭터 없음 · 오른쪽 아래 캐릭터)를 먼저 보여 주고 묻는다.
+
+| 질문 | 보기 | 채우는 칸 |
+|---|---|---|
+| 캐릭터를 넣을까요? | **안 넣는다(추천)**: 그림이 화면을 거의 다 쓰는 모션그래픽 · 넣는다: 화면 아래에 캐릭터가 서서 말할 때 들썩인다 | `mascot.bottom`(`false` · `true`) |
+| (넣는다면) 그림은? | 가진 그림 · 샘플 5종에서 고르기(`examples/mascot-samples/`, 「샘플」 도장이 찍힌 연습용) · 같이 만들기(`references/mascot.md`) | `reel.py mascot body <그림>`(말하는 정면 포즈). 첫 · 마지막 화면 그림도 있으면 `mascot hook` · `mascot cta` |
+
+**마당 4 · 소리**
+
+| 질문 | 보기 | 채우는 칸 |
+|---|---|---|
+| 목소리는? | **무료 목소리(추천)**(보기 설명에 "수익 채널이면 유료가 안전, 상업 이용 공식 문구 없음"을 함께) · 무음으로 먼저 보기 · ElevenLabs(유료) · MiniMax(유료) | `voice.provider` (`references/voices.md`) |
+| 배경 음악은? | **기본 음악(추천, 무료 · 키트가 직접 만듦)**: 로파이 · 잔잔 · 밝게 중 무드 · 없이 · 내 음원(상업 이용 권리가 있는 것) · ElevenLabs Music(유료) | `bgm.provider`(`builtin` · `none` · `file` · `elevenlabs`), 기본 음악이면 `bgm.mood`(`lofi` · `calm` · `bright`) |
+
+무료 목소리면 `python3 -m pip install -U edge-tts` 를 Claude 가 돌린다. 유료면 키를 `.env` 에 넣는 법을 한 줄로 알려 준다(키를 대화에 붙여 넣게 하지 않는다).
+
+**마무리 · 설계도 보여 주기 (채팅으로 할 때)**
+
+1. `python3 engine/reel.py preview` 를 돌린다(1분 안팎, 무료). 예시 편을 방금 정한 브랜드로 조립해 `brand/preview.png`(첫 화면 · 본문 둘 · 마지막 화면) 한 장을 만든다
+2. 그 그림과 함께 설계 요약을 보여 준다:
+
+```
+내 채널 설계
+· 계정  ○○ (@○○) · 다루는 것: ○○
+· 말투  친근한 존댓말     · 움직임  쫀득하게
+· 색    주황 · 흰 배경    · 캐릭터  없음(화면 전체 모션그래픽)
+· 소리  무료 목소리 · 기본 음악(로파이)
+```
+
+3. 묻는다: **「이대로 시작할까요?」** 보기: 이대로 · 고칠 곳 말하기. 고치면 그 칸만 바꾸고 `preview` 를 다시 돌려 보여 준다
+4. `python3 engine/reel.py doctor`
+
+### 0-2. 2단계 주제: 분야만 받고 소재는 Claude 가 조사한다
+
+처음 쓰는 사람은 대개 주제를 모른다. 대시보드는 **분야(카테고리)와 보는 사람만** 고르게 하고, 사용자가 이 글을 붙여 넣는다:
+
+```
+릴스 키트 대시보드에서 분야를 골랐어요. 이 분야로 소재를 조사해서 주제 후보 3개를 찾아 주세요.
+분야: 엑셀 · 문서
+보는 사람: 직장인
+```
+
+**조사 (묻지 않고, 1~2분):**
+1. 도구를 고른다. 웹 검색 도구(WebSearch · WebFetch)가 있으면 그걸로. 이 컴퓨터에 GPT 코덱스 CLI 가 있고 로그인돼 있으면(`codex --version` · `codex login status`) 넓은 조사를 맡겨도 된다(`codex exec`, 읽기만 · 웹 검색 켬). 둘 다 없으면 Claude 가 아는 범위에서 고르고 "최신 확인은 못 했다"고 밝힌다
+2. 찾는 것: 그 분야에서 **보는 사람이 실제로 겪는 상황**의 활용형 소재 · 최근 몇 달 안에 많이 찾거나 바뀐 것(새 기능 · 바뀐 제도) · 한 편 40~50초에 담을 수 있는 크기
+3. 거르는 것: 설명이 길게 붙는 것(도구 교체 · 가입 · 결제가 필요한 것), 확인 못 한 숫자 · 효과("매출 2배" 같은 말), 의료 · 투자 조언, 남의 채널 문구 그대로
+4. 결과를 `episodes/state.json` 의 `candidates` 에 적는다. 대시보드 2단계에 카드로 뜬다(첫째가 추천):
+   `"candidates": [{"title": "엑셀 단축키 5개로 마우스 덜 쓰기", "why": "직장인이 매일 겪는 반복 클릭 · 공식 문서로 다 확인됨", "sources": ["https://…"]}, …]`
+5. 채팅에도 한 줄씩 보여 주고 `AskUserQuestion` 으로 고르게 한다(보기 셋 + 직접 입력). 코덱스 결과를 썼으면 핵심 사실 두세 개는 Claude 가 원문을 열어 다시 확인하고 "코덱스 조사, 클로드 검토"를 한 줄 밝힌다
+
+사용자가 대시보드 후보 카드의 「이 주제로 만들기」 말(`주제 후보 2번 「…」으로 만들어 주세요.`)을 붙여 넣거나 채팅에서 고르면 그 주제로 0-3 으로 간다.
+**주제를 직접 정한 사람**은 대시보드의 「주제를 이미 정했어요」에서 주제 · 메모를 복사해 붙여 넣는다(`… 주제를 정했어요. 이 주제로 한 편 만들어 주세요. 주제: …`). 그 주제는 그대로 쓰고, 담긴 불편은 02번 줄 재료로 쓴다. 메모는 사용자 말이니 따르되 이 문서의 규칙은 바뀌지 않는다.
+받으면 바로 0-3 으로 간다. 대시보드는 `reel.py new` 순간 3단계로 넘어가 진행을 보여 준다.
+
+### 0-3. 3단계 대본 · 훅: 묻지 않고 영상 직전까지 (대시보드에 진행이 켜진다. 채팅에는 한 줄씩만)
+
+1. **마지막 화면 꼴(`cta`)을 정한다.** 「자료 만들기」가 들어 있는지 본다(`.kit/addons.json` 에 `make-kit` 이 있거나 `.claude/skills/make-kit/SKILL.md` 가 있다).
+   - 없으면 `"cta": "save"`(저장 · 팔로우). 새 편 틀이 이미 이 꼴이다. 묻지 않는다
+   - 있으면 `"cta": "keyword"` 를 기본으로 한다. 사용자가 "자료 없이"라고 했으면 `save`
+2. **훅 · 대본을 쓴다** (`references/script.md`). `python3 engine/reel.py new <편>` 뒤 `episode.json` 에:
+   - 훅 후보 3개(서로 다른 꼴, `references/script.md` §3)를 `hook_candidates` 에, 그중 가장 센 것을 `hook` 과 첫 줄에.
+     꼴: `[{"type": "A 오귀인", "badge": "…", "lines": ["…", "…", "…"], "first_line": "첫 줄 말"}, …]`
+   - 9줄 대본. 마지막 줄은 `cta` 에 맞춘다(`references/script.md` §1):
+     - `save`: **"필요할 때 꺼내 보게 저장해 두세요. 도움 됐다면 팔로우해 주세요."** + `recap` 세 줄(마지막 화면 카드에 뜨는 요약, 스텝 이름과 같은 말로)
+     - `keyword`: "[자료 내용]은 자료에 담았어요. 댓글에 [키워드]. 도움 됐다면 팔로우해 주세요." + `kit` 블록(`file` · `name` · 구성 `rows` 3줄 · `keyword`). **자료(`kit.html`)는 지금 쓰지 않는다.** 이름 · 구성 · 키워드만 정하고 자료는 렌더 뒤(0-5)에 만든다
+   - 점검표를 스스로 채점해 `scores` 에 (`{"A 대본": "22/25", "B 구조": "21/25"}`). 묻지 않는다
+   - **화면에 쓸 숫자는 확인한 것만.** 확인 못 한 숫자는 빼고 쓴다(물어보지 않는다)
+   - 캡션 초안은 `out/caption.txt` 에 (`references/meta.md`)
+3. `python3 engine/reel.py lint <편>`. 걸리면 고쳐서 다시. `recap` 의 `[ ]` 는 `lint` 가 잡지 않으니 직접 확인한다
+4. `voice` → `build`
+5. **`frames.py` 를 이 편 그림으로 다시 쓴다** (`references/look.md`, 예시 `examples/meeting-notes/frames.py`). 장면마다 **대사가 하는 말에 맞는 움직임**을 `look.md` 「장면에 맞는 움직임 고르기」 표에서 고르고, 표에 없으면 Motion Prompt 카탈로그에서 찾아 옮긴다(`references/motion-catalog.md`). 템플릿을 쓰는 편이면 `templates/<id>/guide.md` 를 `look.md` 와 함께 읽는다. `build` → `check` 가 통과할 때까지
+6. `python3 engine/reel.py draft <편>` → 스틸 · **씬 대시보드 `out/board.html`**. 스틸을 Claude 가 먼저 열어 보고 깨진 곳을 고친다
+
+### 0-4. 4단계 장면: 한 번 확인 (멈춤)
+
+`draft` 가 끝나면 대시보드가 4단계로 넘어가 장면 9장 · 대사 · 듣기 · 훅 후보를 보여 준다. 채팅에는 한 줄만: "오른쪽에서 장면을 확인해 주세요. 마지막 화면은 지금 「저장 · 팔로우」 꼴이에요(또는 「댓글에 ○○」). 괜찮으면 「이대로 렌더」, 고칠 곳은 장면 카드에 적어 붙여 넣으시면 돼요."
+- **마지막 화면 꼴은 여기서 고른다.** 렌더한 뒤에 바꾸면 다시 렌더해야 한다. 「자료 만들기」가 없는 사람에게 `keyword` 를 권하지 않는다(줄 자료가 없다)
+- **번호는 하나다.** 대본 줄 번호 = 씬 번호 = 장면 카드 번호(01~09). "5번"은 5번 줄 · 5번 씬이다
+- 장면 카드에서 복사한 말은 `5번 장면 고쳐 줘: …`, 훅 후보는 `훅 2번 후보로 바꿔 줘.` 꼴로 온다. 아래 표대로 **그 씬만 다시 만들고** `snapshot` · `board` 까지 돌린다(대시보드가 새 스틸을 바로 보여 준다)
+- 사용자가 대시보드에서 「이대로 렌더」를 누르면 대시보드가 `render` · `cover` 를 돌린다(`renderOk`). 채팅으로 "렌더해"라고 하면 Claude 가 돌린다
+- 렌더가 끝나면(`out/reel.mp4`) 대시보드는 5단계로 간다. 0-5 로
+
+| 사용자가 말하면 | Claude 가 하는 일 |
+|---|---|
+| "3번 대사 ○○로" | `episode.json` 3번 줄 → `voice <편> --line 03` → `build` → `check` → `draft` 대신 `snapshot` · `board` |
+| "5번 그림 다시" · "5번 더 쫀득하게" · "#021 써 줘" | `frames.py` 의 5번만 다시(번호를 주면 `references/motion-catalog.md` 대로 그 움직임을 옮긴다) → `build` → `check` → `snapshot` · `board` |
+| "마지막 화면 저장으로" · "자료 없이" | `cta` 를 `save` → 마지막 줄을 저장 꼴로 · `recap` 세 줄 → `voice --line <마지막>` → `build` → `snapshot` · `board` |
+| "마지막 화면 댓글 키워드로" · "자료 줄래" | (「자료 만들기」가 있을 때만) `cta` 를 `keyword` → `kit` 블록 · 마지막 줄 → `lint` → `voice --line <마지막>` → `build` → `snapshot` · `board`. 없으면 "자료 만들기 추가 파일이 있어야 해요"라고 알린다 |
+| "훅 2번 후보로" | `hook` · 첫 줄을 그 후보로 → `voice --line 01` → `build` → `snapshot` · `board` |
+| "배경 어둡게" · "흰 배경으로" · "색 바꿔" | `brand.json` 의 `background` · `colors` → `build` → `snapshot` · `board` |
+| "말투 바꿔" · "더 차분한 말투로" | `tone.speech` → 대본 아홉 줄을 그 말투로 다시(`references/script.md` §0) → `voice` → `build` → `snapshot` · `board` |
+| "움직임 차분하게" · "더 쫀득하게" | `tone.motion` → `build` → `snapshot` · `board` |
+| "썸네일 캐릭터 빼" · "썸네일에 캐릭터 넣어" | `brand.json` 의 `mascot.cover`(false · true) → `build` → `snapshot` · `board` → (영상이 있으면) `cover` |
+| "캐릭터 빼" · "캐릭터 넣어" | `mascot.bottom` → **배치가 바뀌니 `frames.py` 그림을 새 캔버스 높이(`CH`)에 맞춰 다시** → `build` → `check` → `snapshot` · `board` |
+| "브랜드 톤 다시 정하자" | 0-1 의 마당 2 · 3 만 다시 묻고 `preview` |
+| "음악 바꿔" · "더 잔잔하게" | `brand.json` 의 `bgm`(무드 · 공급처) → `build` → `snapshot` · `board` |
+| "목소리 바꿔" | `brand.json` 의 `voice` → `voice <편>`(전체) → `build` → `snapshot` · `board` |
+| "렌더해" · "렌더 끝났어, 올릴 글 써 줘" | (영상이 없으면) `render`(백그라운드, 1~3분) → `cover` → 0-5 |
+
+### 0-5. 5단계 올릴 글 · 자료 (렌더 뒤, 묻지 않고)
+
+1. **올릴 글을 쓴다** (`references/meta.md`, `cta` 꼴에 맞춰). 대시보드 5단계에 복사 단추로 뜬다
+   - `save`: `caption.txt` · `pinned-comment.txt`(저장 · 팔로우 유도) · `alt-text.txt`. **`dm.txt` 는 만들지 않는다**
+   - `keyword`: `caption.txt` · `pinned-comment.txt` · `dm.txt` · `alt-text.txt`
+   - 쇼츠판은 달라고 할 때만
+2. **`cta` 가 `keyword` 이고 「자료 만들기」가 들어 있으면** `.claude/skills/make-kit/SKILL.md` 를 읽고 그 순서로 자료(`kit.html`)를 만든다(틀 채우기 → `materials` → `kit` 이름 · 구성 · 키워드 확인 → DM · 고정 댓글의 자료 링크 자리). 끝나면 "자료를 노션 · 구글 드라이브 · 내 사이트 등에 올리고 링크를 주시면 DM · 고정 댓글에 넣을게요"라고 알린다
+3. `keyword` 인데 「자료 만들기」가 없으면 "자료는 직접 준비해 링크를 주시면 DM · 고정 댓글에 넣을게요"라고 알린다
+4. 영상 · 커버를 보여 준다
+
+### 0-6. 돈이 드는 것만은 따로 묻는다
+
+ElevenLabs · MiniMax 로 목소리를 뽑기 전, 음악을 ElevenLabs 로 받기 전에는 "줄 수만큼 크레딧이 듭니다"라고 말하고 확인받는다. 무료 목소리 · 무음은 묻지 않는다.
+
+---
+
+## 1. 명령 모음 (Claude 가 돌린다)
+
+```bash
+python3 engine/reel.py new <편>              # episodes/<편>/ 에 episode.json · frames.py (마지막 화면 저장 꼴)
+python3 engine/reel.py new <편> --example    # 다 만든 예시(회의록 편)를 복제
+python3 engine/reel.py lint <편>             # 문장 길이 · 금지어 · 끝말 반복 · 키워드 · 자리표시 · 어림 길이
+python3 engine/reel.py voice <편> [--line 05]  # 음성 + 단어 시각. 한 줄만 다시 뽑기도
+python3 engine/reel.py materials <편>        # kit.html → 카드 미리보기 · 그림 (자료가 있을 때만, 렌더 뒤)
+python3 engine/reel.py build <편>            # 프레임 · 자막 · 소리 조립
+python3 engine/reel.py check <편>            # 그림 잘림 · 늦은 큐 · HyperFrames 검사
+python3 engine/reel.py draft <편>            # 영상 직전까지 한 번에 + 씬 대시보드 (out/board.html)
+python3 engine/reel.py snapshot <편> [초,초]   # 스틸
+python3 engine/reel.py board <편>            # 씬 대시보드만 다시
+python3 engine/reel.py preview                # 지금 브랜드로 예시 편 세 장 → brand/preview.png (인터뷰 마무리 · 브랜드를 바꾼 뒤)
+python3 engine/reel.py render <편>           # out/reel.mp4 (1~3분, 백그라운드로)
+python3 engine/reel.py cover <편>            # out/cover.png
+python3 engine/reel.py mascot hook|cta <그림> # 마스코트 넣기
+python3 engine/reel.py addon <zip>           # 추가 파일 넣기 (자료 만들기 · 템플릿 · 확장팩)
+```
+
+대본 문장을 바꾸면 그 줄만 `voice --line NN` 으로 다시 뽑고 **`build` 부터 다시** 돌린다(길이가 바뀌면 뒤가 전부 밀린다).
+
+---
+
+## 2. 손으로 쓰는 파일은 이것뿐이다 (Claude 가 쓴다)
+
+| 파일 | 무엇 | 누가 |
+|---|---|---|
+| `brand/brand.json` | 계정 이름 · 색 · 마스코트 · 목소리 · 음악 · 마감 문구 | 처음 한 번 |
+| `episodes/<편>/episode.json` | 대본 9~10줄 · 훅 카드 · 마지막 화면 꼴(`cta`) · `recap` 또는 자료 이름/구성/키워드(`kit`) | 편마다 |
+| `episodes/<편>/frames.py` | 본문 프레임 그림(도형 · 등장 시점) | 편마다, Claude 가 |
+| `episodes/<편>/kit.html` | 댓글로 보낼 자료 한 장 | `keyword` 편만, 렌더 뒤 「자료 만들기」로 |
+
+**나머지는 전부 엔진이 만든 것이다.** `index.html` · `compositions/` · `captions` · `audio_meta.json` 을 손으로 고치면 다음 `build` 에서 날아간다. 고칠 게 있으면 위 넷을 고친다.
+
+---
+
+## 3. 절대 규칙
+
+**`SKILL.md` 의 절대 규칙을 따른다.** 이 문서와 부딪치면 `SKILL.md` 가 앞선다.
+
+---
+
+## 4. 자주 틀리는 것
+
+| 증상 | 원인 | 고침 |
+|---|---|---|
+| 그림이 말보다 한참 늦게 뜬다 | 큐를 문장 첫 단어에 걸었다 | 그 그림을 **설명하는 단어**에 건다 (`at(f, "단어")`) |
+| "이게 무슨 말이야" 소리를 듣는다 | 추상어를 화면에 큰 글자로 다시 썼다 | 그 물건의 실물(도형 · 예시 문장)을 띄우고, 말도 쉬운 말로 그 줄만 다시 뽑는다 |
+| 그림 가장자리가 잘린다 | 안전 영역 밖 | x 40~1040 · y 30~캔버스 높이-40(캐릭터 있음 660 · 없음 960). `check` 가 숫자로 알려 준다 |
+| 마지막 그림이 안 보인다 | 프레임 끝에 큐를 걸었다 | 엔진이 끝 0.8초 앞으로 당긴다. 그래도 말이 짧으면 그림을 줄인다 |
+| 알약이 엉뚱한 때 뜬다 | 마지막 줄에 키워드가 없다 | `keyword` 꼴이면 "댓글에 [키워드]", `save` 꼴이면 "저장해 두세요"를 마지막 줄에 그대로 넣는다 (`lint` 가 잡는다) |
+| 자막이 엉뚱한 말을 보여 준다 | `say` 와 `text` 의 어절 수가 다르다 | 두 문장의 띄어쓰기 덩어리 수를 맞춘다 |
+| 마지막 화면에 `[이름1]` · `[자료 이름]` 같은 글자가 나온다 | 새 편 틀의 `recap` · `kit` 자리표시를 안 채웠다 | `recap` · `kit` 의 `[ ]` 를 다 채우고 `build` 부터 |
+| 영상이 55초를 넘는다 | 줄이 길다 | 줄을 줄인다. 한 줄에 한 가지만 |
+| 소재는 바뀌었는데 화면이 지난 편 얘기를 한다 | 앞 편 폴더를 고쳐 썼다 | 새 편은 `new` 로 만든다. 고쳐 쓰지 않는다 |
+
+에러 메시지별 대처는 `references/troubleshoot.md`.
+
+---
+
+## 5. 참고 문서
+
+| 언제 | 문서 |
+|---|---|
+| 훅 · 대본을 쓸 때 (뼈대 · 문장 규칙 · 점검표) | `references/script.md` |
+| `frames.py` 그림을 그릴 때 (화면 규칙 · 도구 · 모션) | `references/look.md` |
+| 표에 없는 움직임이 필요할 때 (Motion Prompt 카탈로그) | `references/motion-catalog.md` |
+| 캡션 · 고정 댓글 · 쇼츠판을 쓸 때 | `references/meta.md` |
+| 댓글로 줄 자료를 만들 때 (「자료 만들기」를 넣었을 때) | `.claude/skills/make-kit/SKILL.md` |
+| 템플릿을 쓰는 편의 그림을 그릴 때 | `templates/<id>/guide.md` (+ `references/look.md`) |
+| 마스코트 그림을 만들 때 (프롬프트 · 규격 · 넣는 법) | `references/mascot.md` |
+| 목소리 고를 때 (무료 · 유료 · 상업 이용 주의) | `references/voices.md` |
+| 명령이 멈췄을 때 | `references/troubleshoot.md` |
+| 다 만든 한 편을 보고 싶을 때 | `examples/meeting-notes/` |

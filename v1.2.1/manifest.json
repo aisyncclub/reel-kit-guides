@@ -1,0 +1,71 @@
+{
+  "guides": "2026.10.24-2",
+  "engine_min": "1.2.1",
+  "files": [
+    {
+      "path": ".claude/skills/make-reel/FLOW.md",
+      "sha256": "2af4c206d4238dbc36f4817edf8fb0d91a6cf35a776a59027022a20eea888668",
+      "size": 23957
+    },
+    {
+      "path": ".claude/skills/make-reel/references/look.md",
+      "sha256": "373f3eb1264c49443facbc1730d9861b81becf36406cd04ebd5a1dcda0f6f2c0",
+      "size": 15002
+    },
+    {
+      "path": ".claude/skills/make-reel/references/mascot.md",
+      "sha256": "14335cdd7a23f90b67f468e8a8c1be8c5e5ccf2b7e83847b9ba3342f07eee05b",
+      "size": 10516
+    },
+    {
+      "path": ".claude/skills/make-reel/references/meta.md",
+      "sha256": "97dc7781ff27510c71957d1bd804c879c93cea399f9863cf83b6e9136dca3f53",
+      "size": 4520
+    },
+    {
+      "path": ".claude/skills/make-reel/references/motion-catalog.md",
+      "sha256": "2abdc99f4bbc9ae0603ce8bb2e99b7323345b9ef8651407117a3e81c4ea85e56",
+      "size": 3615
+    },
+    {
+      "path": ".claude/skills/make-reel/references/script.md",
+      "sha256": "c796e4e1ac1deed473c7f4794438304f776e7f64a9d15cc76551325c1b6a847d",
+      "size": 12207
+    },
+    {
+      "path": ".claude/skills/make-reel/references/troubleshoot.md",
+      "sha256": "de0d2b8ccb788453038eb32b357991a983d4da51752687f18de17b905481ac75",
+      "size": 5519
+    },
+    {
+      "path": ".claude/skills/make-reel/references/voices.md",
+      "sha256": "d00fa5bc1395f4713c939970f9b5b1955497769191223eb18fdfc09a3c8276bd",
+      "size": 3416
+    },
+    {
+      "path": "GUIDE.html",
+      "sha256": "200f5f9c2970ba0c8d9427de9c705740759f833f9506b3b71da91a3a74fec28b",
+      "size": 156721
+    },
+    {
+      "path": "examples/layouts.webp",
+      "sha256": "7c8d06a1a217a7fc6e9948fbaa81dbdf4c60627f9ce7c52a14850e412119d194",
+      "size": 31900
+    },
+    {
+      "path": "examples/meeting-notes/episode.json",
+      "sha256": "fd96acd9804611663ac86d7b6560658937a85079bb8d67bc90b9dc492971b567",
+      "size": 2119
+    },
+    {
+      "path": "examples/meeting-notes/frames.py",
+      "sha256": "a6ff6f233bb95ed657d95ed4b80bb7126943f2dc62b0d576c620f5a0544c35b0",
+      "size": 11765
+    },
+    {
+      "path": "examples/meeting-notes/kit.html",
+      "sha256": "3e38f8df8bbd2ce09d917ea449ba4fa90e65be056abd646194f62f03aed98cf8",
+      "size": 8870
+    }
+  ]
+}
