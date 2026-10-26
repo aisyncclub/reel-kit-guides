@@ -135,7 +135,7 @@
    - 캡션 초안은 `out/caption.txt` 에 (`references/meta.md`)
 3. `python3 engine/reel.py lint <편>`. 걸리면 고쳐서 다시. `recap` 의 `[ ]` 는 `lint` 가 잡지 않으니 직접 확인한다
 4. `voice` → `build`
-5. **`scenes.py` 로 이 편 그림을 쓴다(이어지는 도형, 기본)** — `references/morph.md`, 예시 `examples/meeting-notes/scenes.py`. 첫 줄(1번)부터 장면을 두고, 모양이 바뀌면 0.3초 안에 화면이 차게 한다. 예전 방식이 필요하면 `frames.py` (`references/look.md`, 예시 `examples/meeting-notes/frames.py`). 장면마다 **대사가 하는 말에 맞는 움직임**을 `look.md` 「장면에 맞는 움직임 고르기」 표에서 고르고, 표에 없으면 Motion Prompt 카탈로그에서 찾아 옮긴다(`references/motion-catalog.md`). 템플릿을 쓰는 편이면 `templates/<id>/guide.md` 를 `look.md` 와 함께 읽는다. `build` → `check` 가 통과할 때까지
+5. **`scenes.py` 로 이 편 그림을 쓴다(이어지는 도형, 기본)** — `references/morph.md`, 예시 `examples/meeting-notes/scenes.py`. 첫 줄(1번)부터 장면을 두고, 모양이 바뀌면 0.3초 안에 화면이 차게 한다. 예전 방식이 필요하면 `frames.py` (`references/look.md`, 예시 `examples/meeting-notes/frames.py`). 장면마다 **대사가 하는 말에 맞는 움직임**을 `look.md` 「장면에 맞는 움직임 고르기」 표에서 고르고, 표에 없으면 Motion Prompt 카탈로그에서 찾아 옮긴다(`references/motion-catalog.md`). 템플릿을 쓰는 편이면 `templates/<id>/guide.md` 를 `look.md` 와 함께 읽는다. **사용자가 자기 화면 캡처를 줬거나 `episodes/<편>/captures/` 에 그림이 있으면** 확장팩 템플릿의 캡처 장면(`screen` · `mark`)으로 그 화면 위에서 설명한다 — `templates/<id>/capture.md`. 가리킬 자리는 사용자에게 묻지 않고 격자 그림(`capture.py grid`)을 보고 정한 뒤 `capture.py check` 로 확인한다. 기본 템플릿에는 캡처 장면이 없다(확장팩으로 된다고만 알린다) `build` → `check` 가 통과할 때까지
 6. `python3 engine/reel.py draft <편>` → 스틸 · **씬 대시보드 `out/board.html`**. 스틸을 Claude 가 먼저 열어 보고 깨진 곳을 고친다
 
 ### 0-4. 4단계 장면: 한 번 확인 (멈춤)
@@ -254,6 +254,7 @@ python3 engine/reel.py addon <zip>           # 추가 파일 넣기 (자료 만�
 | 캡션 · 고정 댓글 · 쇼츠판을 쓸 때 | `references/meta.md` |
 | 댓글로 줄 자료를 만들 때 (「자료 만들기」를 넣었을 때) | `.claude/skills/make-kit/SKILL.md` |
 | 템플릿을 쓰는 편의 그림을 그릴 때 | `templates/<id>/guide.md` (+ `references/look.md`) |
+| 사용자 화면 캡처 위에서 설명할 때(빨간 원 · 형광펜 · 확대 · 마우스) | `templates/<id>/capture.md` (확장팩 템플릿) |
 | 마스코트 그림을 만들 때 (프롬프트 · 규격 · 넣는 법) | `references/mascot.md` |
 | 목소리 고를 때 (무료 · 유료 · 상업 이용 주의) | `references/voices.md` |
 | 명령이 멈췄을 때 | `references/troubleshoot.md` |
