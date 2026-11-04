@@ -1,9 +1,9 @@
 {
   "name": "reel-kit-guides",
-  "updated": "2026-10-26T12:51:41+09:00",
-  "engine_latest": "1.3.3",
+  "updated": "2026-11-04T19:29:38+09:00",
+  "engine_latest": "1.4.0",
   "engine_required": "1.2.0",
-  "engine_note": "확장팩 1.2.0 캡처 장면 안내",
+  "engine_note": "엔진 1.4.0: 대시보드 0 준비 · 단계마다 할 일 · 공식 고르기(공식 7가지)",
   "lines": [
     {
       "engine_min": "1.2.0",
@@ -40,6 +40,12 @@
       "guides": "2026.10.26-2",
       "manifest": "v1.3.3/manifest.json",
       "sha256": "d1a03785826721c33b2c69f557bfd8a55ae50d044ef4c3554031de5a677e2635"
+    },
+    {
+      "engine_min": "1.4.0",
+      "guides": "2026.11.04-1",
+      "manifest": "v1.4.0/manifest.json",
+      "sha256": "c243df40ed0b1135c8209560415b21a55eb9ddcc80e2d509e5934f114adf7ea5"
     }
   ]
 }

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>회의록 세 칸 프롬프트</title>
+<style>
+  /* 색은 brand.json 과 맞춘다 (새 편은 reel.py new 가 자동으로 채운다) */
+  :root { --accent: #E8590C; --ink: #1B1B1F; --gray: #55555C; --paper: #FAF7F0; --line: #E6E1D6; --dark: #16181D; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", sans-serif; line-height: 1.6; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+  .eyebrow { color: var(--accent); font-weight: 800; letter-spacing: .02em; font-size: 15px; }
+  h1 { font-size: 34px; line-height: 1.25; margin: 6px 0 10px; letter-spacing: -.02em; }
+  .lead { color: var(--gray); margin: 0 0 24px; }
+  h2 { font-size: 22px; margin: 40px 0 12px; letter-spacing: -.01em; }
+  h2 .n { color: var(--accent); font-family: ui-monospace, Menlo, monospace; margin-right: 8px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 12px 14px; border-top: 1px solid var(--line); font-size: 15px; vertical-align: top; }
+  th { background: #F4EFE5; font-weight: 800; border-top: none; }
+  td a { color: var(--accent); font-weight: 700; text-decoration: none; }
+  figure { margin: 18px 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { color: var(--gray); font-size: 14px; margin-top: 8px; }
+  .copy { position: relative; background: var(--dark); color: #E8E8EA; border-radius: 14px; padding: 18px 18px 16px; margin: 12px 0; }
+  .copy pre { margin: 0; white-space: pre-wrap; word-break: keep-all; font: 15px/1.65 ui-monospace, Menlo, monospace; }
+  .copy button { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #fff; border: 0;
+    border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 13px; cursor: pointer; }
+  ul { padding-left: 20px; }
+  .foot { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--gray); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">회의록 세 칸 프롬프트</div>
+  <h1>회의 메모를 결정 · 할 일 · 질문, 세 칸으로</h1>
+  <p class="lead">요약해 달라고만 하면 또 읽어야 하는 긴 글이 나옵니다. 뭘 뽑을지 먼저 정해 주면 다음 회의에 바로 쓰는 세 칸이 남아요.</p>
+
+  <h2><span class="n">01</span>한눈에 보기</h2>
+  <table>
+    <tr><th>이럴 때</th><th>이걸 복사</th></tr>
+    <tr><td>회의 메모가 길게 있다</td><td><a href="#p1">세 칸 프롬프트</a></td></tr>
+    <tr><td>키워드 몇 개만 적어 뒀다</td><td><a href="#p2">메모만 있을 때</a></td></tr>
+    <tr><td>할 일을 표로 공유해야 한다</td><td><a href="#p3">표 형식</a></td></tr>
+  </table>
+  <figure>
+    <svg viewBox="0 0 680 300" role="img" aria-label="긴 메모가 결정, 할 일, 질문 세 칸으로 나뉜다">
+      <rect x="20" y="30" width="200" height="240" rx="14" fill="#fff" stroke="#1B1B1F" stroke-width="3"/>
+      <text x="40" y="68" font-size="20" font-weight="800" fill="#55555C">회의 메모</text>
+      <g fill="#E6E1D6"><rect x="40" y="90" width="150" height="9" rx="4"/><rect x="40" y="114" width="120" height="9" rx="4"/><rect x="40" y="138" width="160" height="9" rx="4"/><rect x="40" y="162" width="110" height="9" rx="4"/><rect x="40" y="186" width="150" height="9" rx="4"/><rect x="40" y="210" width="130" height="9" rx="4"/><rect x="40" y="234" width="90" height="9" rx="4"/></g>
+      <line x1="250" y1="150" x2="330" y2="150" stroke="#55555C" stroke-width="4" stroke-linecap="round"/>
+      <polyline points="314,136 330,150 314,164" fill="none" stroke="#55555C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <g font-size="24" font-weight="800" fill="#1B1B1F">
+        <rect x="360" y="30" width="300" height="70" rx="12" fill="#fff" stroke="#E8590C" stroke-width="3"/><text x="384" y="74">결정</text>
+        <rect x="360" y="115" width="300" height="70" rx="12" fill="#fff" stroke="#E8590C" stroke-width="3"/><text x="384" y="159">할 일</text>
+        <rect x="360" y="200" width="300" height="70" rx="12" fill="#fff" stroke="#E8590C" stroke-width="3"/><text x="384" y="244">질문</text>
+      </g>
+    </svg>
+    <figcaption>요약 한 덩어리 대신, 정해진 것 · 해야 할 것 · 남은 것으로 나눈다.</figcaption>
+  </figure>
+
+  <h2 id="p1"><span class="n">02</span>세 칸 프롬프트</h2>
+  <p>메모를 맨 아래에 붙여 넣고 그대로 보내면 됩니다.</p>
+  <div class="copy"><button type="button">복사</button><pre>아래 회의 메모를 세 칸으로 정리해 줘.
+1) 결정: 회의에서 정해진 것만 한 줄씩. 추측해서 채우지 마.
+2) 할 일: 누가 · 언제까지 · 무엇을 표로. 정해지지 않은 칸은 '미정'.
+3) 질문: 결론이 안 난 것만. 다음 회의에서 정할 것.
+메모에 없는 내용은 쓰지 마.
+
+[여기에 회의 메모 붙여 넣기]</pre></div>
+
+  <h2><span class="n">03</span>상황별로 바꿔 쓰기</h2>
+  <p id="p2"><b>메모만 있을 때.</b> 키워드만 적어 둔 날은 칸이 애매한 게 많습니다. 애매한 건 질문으로 보내게 합니다.</p>
+  <div class="copy"><button type="button">복사</button><pre>메모가 짧아. 아래 키워드만 보고 세 칸(결정 · 할 일 · 질문)으로 나눠 줘.
+어느 칸인지 애매한 건 '질문'에 넣고, 왜 애매한지 한 줄 붙여 줘.
+
+[키워드 메모]</pre></div>
+  <p id="p3"><b>표로 공유할 때.</b> 할 일 칸의 형식을 못 박아 두면 메신저에 그대로 붙일 수 있어요.</p>
+  <div class="copy"><button type="button">복사</button><pre>할 일은 이 형식 그대로 줘. 다른 말은 붙이지 마.
+| 누가 | 언제까지 | 무엇을 |
+|---|---|---|</pre></div>
+  <figure>
+    <svg viewBox="0 0 680 260" role="img" aria-label="누가, 언제까지, 무엇을 세 열로 된 할 일 표">
+      <rect x="20" y="20" width="640" height="220" rx="14" fill="#fff" stroke="#1B1B1F" stroke-width="3"/>
+      <g font-size="22" font-weight="800" fill="#E8590C"><text x="50" y="66">누가</text><text x="250" y="66">언제까지</text><text x="450" y="66">무엇을</text></g>
+      <line x1="20" y1="90" x2="660" y2="90" stroke="#E6E1D6" stroke-width="2"/>
+      <g font-size="21" font-weight="600" fill="#1B1B1F"><text x="50" y="132">민지</text><text x="250" y="132">금요일</text><text x="450" y="132">시안 정리</text>
+      <text x="50" y="176">준호</text><text x="250" y="176">다음 주</text><text x="450" y="176">견적 받기</text>
+      <text x="50" y="220">나</text><text x="250" y="220">내일</text><text x="450" y="220">공지 쓰기</text></g>
+    </svg>
+    <figcaption>표 안의 이름과 날짜는 예시입니다.</figcaption>
+  </figure>
+
+  <h2><span class="n">04</span>쓸 때 주의</h2>
+  <ul>
+    <li>메모에 개인 정보(전화번호 · 주소)가 있으면 지우고 넣으세요.</li>
+    <li>클로드가 빈칸을 추측으로 채우지 않게 "메모에 없는 내용은 쓰지 마"를 남겨 두세요.</li>
+    <li>결과는 보내기 전에 한 번 읽어 보세요. 사람 이름과 날짜가 가장 자주 틀립니다.</li>
+  </ul>
+
+  <div class="foot">
+    작성 2026.10 · 이 자료의 프롬프트와 표의 내용은 직접 만든 예시입니다.<br />
+    회의 내용 정리를 돕는 예시이며, 결과의 정확성은 원래 메모와 대조해 확인하세요.
+  </div>
+</main>
+<script>
+  // 복사 버튼: 클립보드 → execCommand → 블록 선택, 세 단계로 내려간다
+  document.querySelectorAll(".copy button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var pre = b.parentElement.querySelector("pre"), text = pre.innerText;
+      function done(label) { b.textContent = label; setTimeout(function () { b.textContent = "복사"; }, 1500); }
+      function select() { var r = document.createRange(); r.selectNodeContents(pre);
+        var s = getSelection(); s.removeAllRanges(); s.addRange(r); return s; }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { done("복사됨"); }, fallback);
+      } else { fallback(); }
+      function fallback() { var s = select(); var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) {}
+        if (ok) { s.removeAllRanges(); done("복사됨"); } else { done("직접 복사"); } }
+    });
+  });
+</script>
+</body>
+</html>
