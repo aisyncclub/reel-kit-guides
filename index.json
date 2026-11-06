@@ -1,9 +1,9 @@
 {
   "name": "reel-kit-guides",
-  "updated": "2026-11-04T19:29:38+09:00",
-  "engine_latest": "1.4.0",
+  "updated": "2026-11-06T23:10:12+09:00",
+  "engine_latest": "1.4.1",
   "engine_required": "1.2.0",
-  "engine_note": "엔진 1.4.0: 대시보드 0 준비 · 단계마다 할 일 · 공식 고르기(공식 7가지)",
+  "engine_note": "엔진 1.4.1: 새 영상 만들기 단추 · 저장 표시 · 캐릭터 실패 안내 · 폴더 이름 표시",
   "lines": [
     {
       "engine_min": "1.2.0",
@@ -46,6 +46,12 @@
       "guides": "2026.11.04-1",
       "manifest": "v1.4.0/manifest.json",
       "sha256": "c243df40ed0b1135c8209560415b21a55eb9ddcc80e2d509e5934f114adf7ea5"
+    },
+    {
+      "engine_min": "1.4.1",
+      "guides": "2026.11.06-1",
+      "manifest": "v1.4.1/manifest.json",
+      "sha256": "a2d7f19e63817c88ebbff6c97018e3cece976e9eab054a2d3e7e54025f64c287"
     }
   ]
 }
