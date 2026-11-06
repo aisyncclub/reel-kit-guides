@@ -1,0 +1,86 @@
+{
+  "guides": "2026.11.07-1",
+  "engine_min": "1.4.2",
+  "files": [
+    {
+      "path": ".claude/skills/make-reel/FLOW.md",
+      "sha256": "da122e49072e3ae0051cec535edc9ac91dad18dd75dddb52d23af659c4a01480",
+      "size": 31396
+    },
+    {
+      "path": ".claude/skills/make-reel/references/formulas.md",
+      "sha256": "280f8823b7603575a4a5644038d22c6ceeccb205e6ebc83f4add5038df590601",
+      "size": 19417
+    },
+    {
+      "path": ".claude/skills/make-reel/references/look.md",
+      "sha256": "373f3eb1264c49443facbc1730d9861b81becf36406cd04ebd5a1dcda0f6f2c0",
+      "size": 15002
+    },
+    {
+      "path": ".claude/skills/make-reel/references/mascot.md",
+      "sha256": "d7ba91658eb61f8c57c5d1195af1346ef7f82aa35538a432c14d77b2f13925cb",
+      "size": 12471
+    },
+    {
+      "path": ".claude/skills/make-reel/references/meta.md",
+      "sha256": "97dc7781ff27510c71957d1bd804c879c93cea399f9863cf83b6e9136dca3f53",
+      "size": 4520
+    },
+    {
+      "path": ".claude/skills/make-reel/references/morph.md",
+      "sha256": "b8e4baef62e3f5f04dce77c8dbc16169026931397410ffbab21a55cc8d973f01",
+      "size": 9598
+    },
+    {
+      "path": ".claude/skills/make-reel/references/motion-catalog.md",
+      "sha256": "2abdc99f4bbc9ae0603ce8bb2e99b7323345b9ef8651407117a3e81c4ea85e56",
+      "size": 3615
+    },
+    {
+      "path": ".claude/skills/make-reel/references/script.md",
+      "sha256": "43da9f9422058d9cb77c64dfd7787178fea12c09008fdf029de0fe82fbb7476d",
+      "size": 12519
+    },
+    {
+      "path": ".claude/skills/make-reel/references/troubleshoot.md",
+      "sha256": "6bfc78402fd47264d30f16d647469b0005728c136b566b1829ccd38efed0390e",
+      "size": 5694
+    },
+    {
+      "path": ".claude/skills/make-reel/references/voices.md",
+      "sha256": "d00fa5bc1395f4713c939970f9b5b1955497769191223eb18fdfc09a3c8276bd",
+      "size": 3416
+    },
+    {
+      "path": "GUIDE.html",
+      "sha256": "28e34be5fd78b1a0acd9bba1e878cf33198a0376fb5ccb54b47d38463d8c985b",
+      "size": 154712
+    },
+    {
+      "path": "examples/layouts.webp",
+      "sha256": "0059427eb6f7dae3eb9ad73327a5c24530dd0b67bea78ef7bf9df81f092de350",
+      "size": 34728
+    },
+    {
+      "path": "examples/meeting-notes/episode.json",
+      "sha256": "fd96acd9804611663ac86d7b6560658937a85079bb8d67bc90b9dc492971b567",
+      "size": 2119
+    },
+    {
+      "path": "examples/meeting-notes/frames.py",
+      "sha256": "a6ff6f233bb95ed657d95ed4b80bb7126943f2dc62b0d576c620f5a0544c35b0",
+      "size": 11765
+    },
+    {
+      "path": "examples/meeting-notes/kit.html",
+      "sha256": "3e38f8df8bbd2ce09d917ea449ba4fa90e65be056abd646194f62f03aed98cf8",
+      "size": 8870
+    },
+    {
+      "path": "examples/meeting-notes/scenes.py",
+      "sha256": "e045e1fe15af5139a6f477ae16a2693748271cb7f9a5d802625582724d6a9be1",
+      "size": 3246
+    }
+  ]
+}
